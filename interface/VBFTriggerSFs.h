@@ -21,7 +21,7 @@ class VBFTriggerSFs {
  private:
   static float getHistoContent    (const TH3F& hist, float x, float y,float z, int unc_scale); 
   static TH3F  *loadHisto         (TFile& file, std::string_view name);
-  static bool  JetsValidityRegion (float VBFjet1_pt, float VBFjet2_pt, float VBFjets_mjj); 
+  static bool  JetsValidityRegion (float VBFjets_mjj, float VBFjet1_pt, float VBFjet1_pt); 
 
  protected: 
   TH3F* eff_data; 
