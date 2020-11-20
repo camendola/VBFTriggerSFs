@@ -1,4 +1,4 @@
-#include "VBFTriggersSFs/interface/VBFTriggerSFs.h"
+#include "VBFTriggersSF/interface/VBFTriggerSFs.h"
 
 #include <sstream>
 
@@ -17,17 +17,17 @@ VBFTriggerSFs::VBFTriggerSFs(std::string_view input_file)
 
 float VBFTriggerSFs::getJetsEfficiencyData(float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale) const
 {
-  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt, VBFjet2_pt) ? getHistoContent(*eff_data, VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 1.);
+  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt, VBFjet2_pt) ? getHistoContent(*eff_data, VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 0.);
 }
 
 float VBFTriggerSFs::getJetsEfficiencyMC(float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale) const
 {
-  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt,  VBFjet2_pt) ? getHistoContent(*eff_mc, VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 1.);
+  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt,  VBFjet2_pt) ? getHistoContent(*eff_mc, VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 0.);
 }
 
 float VBFTriggerSFs::getJetsSF(float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale) const
 {
-  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt, VBFjet2_pt) ? getHistoContent(*sf,  VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 1.);
+  return (JetsValidityRegion (VBFjets_mjj, VBFjet1_pt, VBFjet2_pt) ? getHistoContent(*sf,  VBFjets_mjj, VBFjet1_pt, VBFjet2_pt, unc_scale) : 0.);
 }
 
 
@@ -50,19 +50,20 @@ float VBFTriggerSFs::getHistoContent(const TH3F& histo, float x, float y, float 
   if (ibinz == 0)     ibinz = 1;
   if (ibinz > nbinsz) ibinz = nbinsz;
 
-  return (unc_scale == 0? histo.GetBinContent(ibinx, ibiny, ibinz) :  histo.GetBinError(ibinx, ibiny, ibinz));
+  return (unc_scale == 0? histo.GetBinContent(ibinx, ibiny, ibinz) :  histo.GetBinContent(ibinx, ibiny, ibinz) + unc_scale * histo.GetBinError(ibinx, ibiny, ibinz));
 }
 
 
 TH3F* VBFTriggerSFs::loadHisto(TFile& file, std::string_view name)
 {
-  TH3F* histo = (TH3F*) (file.Get(name.data()));
+  TH3F* histo = dynamic_cast<TH3F*> (file.Get(name.data()));
   if(!histo) {
     std::ostringstream ss;
     ss << "VBFTriggerSFs::VBFTriggerSFs: cannot to load histogram \"" << name << "\" from  \""
        << file.GetName() << "\".";
     throw std::runtime_error(ss.str());
   }
+  histo->SetDirectory(nullptr);
   return histo;
 }
 

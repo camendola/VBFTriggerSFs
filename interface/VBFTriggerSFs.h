@@ -12,7 +12,7 @@
 class VBFTriggerSFs {
  public:
   VBFTriggerSFs(std::string_view input_file);
-  ~VBFTriggerSFs() {};
+  ~VBFTriggerSFs();
   
   float getJetsEfficiencyData (float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale = 0) const;
   float getJetsEfficiencyMC   (float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale = 0) const;
@@ -21,7 +21,7 @@ class VBFTriggerSFs {
  private:
   static float getHistoContent    (const TH3F& hist, float x, float y,float z, int unc_scale); 
   static TH3F  *loadHisto         (TFile& file, std::string_view name);
-  static bool  JetsValidityRegion (float VBFjets_mjj, float VBFjet1_pt, float VBFjet1_pt); 
+  static bool  JetsValidityRegion (float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt); 
 
  protected: 
   TH3F* eff_data; 
