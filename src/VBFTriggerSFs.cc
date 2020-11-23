@@ -1,4 +1,4 @@
-#include "VBFTriggerSF/interface/VBFTriggerSFs.h"
+#include "VBFTriggerSFs/interface/VBFTriggerSFs.h"
 
 #include <sstream>
 
@@ -14,6 +14,8 @@ VBFTriggerSFs::VBFTriggerSFs(std::string_view input_file)
   eff_mc   = loadHisto(file, "MCEff_mjj_pT1_pT2");
   sf       = loadHisto(file, "SF_mjj_pT1_pT2");
 }
+
+VBFTriggerSFs::~VBFTriggerSFs() {}
 
 float VBFTriggerSFs::getJetsEfficiencyData(float VBFjets_mjj, float VBFjet1_pt, float VBFjet2_pt, int unc_scale) const
 {
